@@ -1,0 +1,8 @@
+= [2023-06-11] 230611_MyProjectBuilder_PerlEdition
+:docinfo: shared
+:date:    2023-06-11
+:toc:     macro
+
+== README
+
+Perl scripts to help me build my projects (currently: C++ projects).
