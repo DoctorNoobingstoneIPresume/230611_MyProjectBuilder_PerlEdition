@@ -132,7 +132,7 @@ sub Main
 			
 			my $tObject = 0;
 			my $fhObject;
-			do
+			for (my $iRep = 0; $iRep < 1; ++$iRep)
 			{
 				if (! open ($fhObject, '<', $sObject))
 				{
@@ -148,7 +148,7 @@ sub Main
 				}
 				
 				$tObject = $asStat [9];
-			} while (0);
+			}
 			if ($fhObject) { close ($fhObject); }
 			
 			my $bProcess = $sourcefile->MaxModifyTime () >= $tObject;

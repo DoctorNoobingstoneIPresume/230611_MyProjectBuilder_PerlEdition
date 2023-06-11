@@ -69,7 +69,7 @@ sub Do_Scan
 	my $sourcefile = undef;
 	{
 		my $fh;
-		do
+		for (my $iRep = 0; $iRep < 1; ++$iRep)
 		{
 			if (exists ($rhSourceFiles->{$sPathName0}))
 			{
@@ -152,7 +152,7 @@ sub Do_Scan
 				
 				$sourcefile->IncludePathNames (\%hksPathNames1);
 			}
-		} while (0);
+		}
 		
 		if ($fh)
 		{
