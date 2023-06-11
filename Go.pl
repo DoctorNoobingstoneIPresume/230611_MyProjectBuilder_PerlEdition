@@ -119,13 +119,36 @@ sub Main
 			my $sObject = "${sBuildFolder}/${sUnitJustName}.o";
 			my @asArgs =
 			(
-				'g++',
-				'-std=c++11',
-				'-I', $ENV {'BOOST_ROOT'},
-				'-g',
-				'-c', $sUnit,
-				'-o', $sObject
+				HashElementOr (\%ENV, 'CXX', 'g++')
 			);
+			{
+				push
+				(
+					@asArgs,
+					'-std=gnu++11'
+				);
+				
+				push
+				(
+					@asArgs,
+					SplitCommandLine (HashElementOr (\%ENV, 'CPPFLAGS', ''))
+				);
+				
+				push
+				(
+					@asArgs,
+					SplitCommandLine (HashElementOr (\%ENV, 'CXXFLAGS', ''))
+				);
+				
+				push
+				(
+					@asArgs,
+					'-I', $ENV {'BOOST_ROOT'},
+					'-g',
+					'-c', $sUnit,
+					'-o', $sObject
+				);
+			}
 			
 			my $sourcefile = $scanner->Get ($sUnit);
 			Azzert ($sourcefile);
