@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 use strict; use warnings;
-use Scanner;
+use Konfig; use Scanner;
 use Util;
 
 sub my_system
@@ -37,6 +37,28 @@ sub SplitToJustNameAndJustExt
 
 sub Main
 {
+	my $rasArgs = @_ ? shift : [];
+	
+	my $konfig = Konfig->CreateObject ();
+	{
+		my $bResult = $konfig->ApplyCmdLine ($rasArgs);
+		
+		if ($konfig->ShowKonfigFlag ())
+		{
+			printf ("%s\n", IndentWithTitle ($konfig->ToString (), 'Konfig'));
+		}
+		
+		if (! $bResult)
+		{
+			printf ("Konfig::ApplyCmdLine has failed !\n");
+			{ use IO::Handle; STDOUT->flush (); }
+			return 0;
+		}
+	}
+	
+	if ($konfig->ExitFlag ())
+		{ return 1; }
+	
 	#printf ("Hello, World of Perl !\n");
 	
 	my $sBuildFolder = "_Build";
@@ -174,7 +196,7 @@ sub Main
 			}
 			if ($fhObject) { close ($fhObject); }
 			
-			my $bProcess = $sourcefile->MaxModifyTime () >= $tObject;
+			my $bProcess = $sourcefile->MaxModifyTime () >= $tObject || $konfig->AlwaysFlag ();
 			
 			if (! $bProcess)
 			{
@@ -249,11 +271,11 @@ sub Main
 		}
 	}
 	
-	return 0;
+	return 1;
 }
 
-my $iResult = &Main ();
-if ($iResult)
+my $iResult = &Main (\@ARGV);
+if (! $iResult)
 {
 	printf "Main has failed !\n";
 	{ use IO::Handle; STDOUT->flush (); }
