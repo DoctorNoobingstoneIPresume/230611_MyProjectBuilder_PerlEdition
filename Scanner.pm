@@ -9,10 +9,18 @@ sub CreateObject
 	
 	my $self = bless ({}, $sClassName);
 	{
+		$self->{iVerb}         = 0;
 		$self->{rhSourceFiles} = {};
 	}
 	
 	return $self;
+}
+
+sub Verb
+{
+	my $self = @_ ? shift : Azzert ();
+	if (@_) { my $value = shift; $self->{iVerb} = $value; return $self; }
+	else    { return $self->{iVerb}; }
 }
 
 sub Get
@@ -26,13 +34,14 @@ sub Get
 
 sub Scan
 {
+	my $self               = scalar (@_) >= 1 ? $_ [0] : Azzert ();
 	my $sPathName0         = scalar (@_) >= 2 ? $_ [1] : Azzert ();
 	my $iLevel             = scalar (@_) >= 5 ? $_ [4] : 0;
 	my $sIndent            = IndentPrefix ($iLevel);
 	
-	printf ("%sScanning \"%s\":\n%s{\n", $sIndent, $sPathName0, $sIndent);
+	if ($self->{iVerb}) { printf ("%sScanning \"%s\":\n%s{\n", $sIndent, $sPathName0, $sIndent); }
 	my $sourcefileRet = &Do_Scan (@_);
-	printf ("%s}\n\n", $sIndent);
+	if ($self->{iVerb}) { printf ("%s}\n\n", $sIndent); }
 	
 	return $sourcefileRet;
 }
@@ -55,7 +64,7 @@ sub Do_Scan
 			
 			if ($ks =~ m#(.*)/#)
 			{
-				#printf ("%s" . "Modifying %s to %s...\n", $sIndent, "\"${s}\"", "\"${1}\"");
+				#if ($self->{iVerb}) { printf ("%s" . "Modifying %s to %s...\n", $sIndent, "\"${s}\"", "\"${1}\""); }
 				$ks = $1;
 			}
 			
@@ -74,7 +83,7 @@ sub Do_Scan
 			if (exists ($rhSourceFiles->{$sPathName0}))
 			{
 				$sourcefile = $rhSourceFiles->{$sPathName0};
-				printf ("%s" . "Scanner::Scan: Returning from cache (%s).\n", $sIndent, $sourcefile ? 'defined' : 'undef');
+				if ($self->{iVerb}) { printf ("%s" . "Scanner::Scan: Returning from cache (%s).\n", $sIndent, $sourcefile ? 'defined' : 'undef'); }
 				return $sourcefile;
 			}
 			
@@ -82,14 +91,14 @@ sub Do_Scan
 			
 			if (! open ($fh, '<', $sPathName0))
 			{
-				printf ("%s" . "Scanner::Scan: We have failed to open \"%s\".\n", $sIndent, $sPathName0);
+				if ($self->{iVerb}) { printf ("%s" . "Scanner::Scan: We have failed to open \"%s\".\n", $sIndent, $sPathName0); }
 				last;
 			}
 			
 			my @asStat = stat ($fh);
 			if (! @asStat)
 			{
-				printf ("%s" . "Scanner::Scan: We have failed to stat \"%s\".\n", $sIndent, $sPathName0);
+				if ($self->{iVerb}) { printf ("%s" . "Scanner::Scan: We have failed to stat \"%s\".\n", $sIndent, $sPathName0); }
 				last;
 			}
 			
@@ -107,7 +116,7 @@ sub Do_Scan
 						chomp ($sLine);
 						if ($sLine =~ m@^\s*[#]\s*include\s+["<](.*)[">]\s*$@)
 						{
-							#printf ("%s" . ": %s\n", $sIndent, $sLine);
+							#if ($self->{iVerb}) { printf ("%s" . ": %s\n", $sIndent, $sLine); }
 							$hksNames1 {$1} = 1;
 						}
 					}
@@ -131,7 +140,7 @@ sub Do_Scan
 							
 							if (exists ($$rhksPathNamesAbove {$sPathName1}))
 							{
-								printf ("%s" . "Scanner::Scan: Re-inclusion from %s: %s.\n", $sIndent, "\"${sPathName0}\"", "\"${sPathName1}\"");
+								if ($self->{iVerb}) { printf ("%s" . "Scanner::Scan: Re-inclusion from %s: %s.\n", $sIndent, "\"${sPathName0}\"", "\"${sPathName1}\""); }
 								$hksPathNames1 {$sPathName1} = 1;
 								next;
 							}

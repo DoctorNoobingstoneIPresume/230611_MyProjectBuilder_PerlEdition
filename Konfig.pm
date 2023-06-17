@@ -8,9 +8,10 @@ sub CreateObject
 	
 	my $self = bless ({}, $sClassName);
 	{
-		$self->{bShowKonfig} = 0;
-		$self->{bExit}       = 0;
-		$self->{bAlways}     = 0;
+		$self->{bShowKonfig}  = 0;
+		$self->{bExit}        = 0;
+		$self->{bAlways}      = 0;
+		$self->{iScannerVerb} = 0;
 	}
 	
 	return $self;
@@ -37,6 +38,13 @@ sub AlwaysFlag
 	else    { return $self->{bAlways    }; }
 }
 
+sub ScannerVerb
+{
+	my $self = @_ ? shift : Azzert ();
+	if (@_) { my $value = shift; $self->{iScannerVerb} = $value; return $self; }
+	else    { return $self->{iScannerVerb}; }
+}
+
 sub ApplyCmdLine
 {
 	my $self    = @_ ? shift : Azzert ();
@@ -47,7 +55,16 @@ sub ApplyCmdLine
 	{
 		if (length ($sPendingOption))
 		{
-			Azzert ();
+			my $iValue = StringToNumber ($sArg);
+			
+			if ($sPendingOption eq 'scanner-verb')
+			{
+				$self->ScannerVerb ($iValue);
+			}
+			else
+			{
+				Azzert ();
+			}
 		}
 		else
 		{
@@ -63,12 +80,22 @@ sub ApplyCmdLine
 						"    <program-name> <option>*\n" .
 						"\n" .
 						"Options:\n" .
-						"    --help                 Shows this helpful message.\n" .
-						"    -a, --always           Always builds all files.\n" .
+						"    --help\n" .
+						"        Shows this helpful message.\n" .
+						"\n" .
+						"    -a, --always\n" .
+						"        Always builds all files.\n" .
+						"\n" .
+						"    --scanner-verb <level>\n" .
+						"        Level of verbosity for debug messages from the Scanner (of `#include`-d files).\n" .
 						"\n"
 					);
 					
 					$self->ExitFlag (1);
+				}
+				elsif ($sOption eq 'scanner-verb')
+				{
+					$sPendingOption = $sOption;
 				}
 				elsif ($sOption eq 'a' || $sOption eq 'always')
 				{

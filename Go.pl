@@ -109,24 +109,27 @@ sub Main
 	}
 	my $scanner = Scanner->CreateObject ();
 	{
+		my $iVerb = $konfig->ScannerVerb ();
+		$scanner->Verb ($iVerb);
+		
 		foreach my $sUnit (@asUnits)
 		{
 			#printf ("Scanning \"%s\":\n{\n", $sUnit);
 			my $sourcefile = $scanner->Scan ($sUnit, {'./' => 1});
 			if (defined ($sourcefile))
 			{
-				printf ("%s\n", $sourcefile->ToString ());
+				if ($iVerb) { printf ("%s\n", $sourcefile->ToString ()); }
 			}
 			else
 			{
-				printf ("undef\n");
+				if ($iVerb) { printf ("undef\n"); }
 			}
 			#printf ("}\n\n");
 			
 			#last;
 		}
 		
-		if (1)
+		if ($iVerb)
 		{
 			printf ("%s\n", IndentWithTitle ($scanner->ToString (), "Scanner"));
 		}
