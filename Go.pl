@@ -250,14 +250,31 @@ sub Main
 			
 			printf ("Linking => %s...\n{\n", "\"${sObjectLinkJustName}\"");
 			
-			my_system
-			(
-				'g++',
-				'-g',
-				$sObjectLink,
-				$sArchive,
-				'-o', $sObjectLinkJustName
-			);
+			my @asArgs = (HashElementOr (\%ENV, 'LD', 'g++'));
+			{
+				push
+				(
+					@asArgs,
+					'-g'
+				);
+				
+				push
+				(
+					@asArgs,
+					$sObjectLink,
+					$sArchive,
+					'-o', $sObjectLinkJustName
+				);
+				
+				push
+				(
+					@asArgs,
+					SplitCommandLine (HashElementOr (\%ENV, 'LDFLAGS', ''))
+				);
+			}
+			
+			#printf (IndentWithTitle (ArrayToString (\@asArgs), 'Linker command line:'));
+			my_system (@asArgs);
 			
 			printf ("}\n\n");
 		}
