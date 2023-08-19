@@ -18,80 +18,11 @@ sub CreateObject
 	return $self;
 }
 
-sub IncludeNames
-{
-	my $self = @_ ? shift : Azzert ();
-	if (@_)
-	{
-		my $value = shift;
-		$self->{rhksIncludeNames} = $value;
-		return $self;
-	}
-	else
-	{
-		return $self->{rhksIncludeNames};
-	}
-}
-
-sub IncludePathNames
-{
-	my $self = @_ ? shift : Azzert ();
-	if (@_)
-	{
-		my $value = shift;
-		$self->{rhksIncludePathNames} = $value;
-		return $self;
-	}
-	else
-	{
-		return $self->{rhksIncludePathNames};
-	}
-}
-
-sub ModifyTime
-{
-	my $self = @_ ? shift : Azzert ();
-	if (@_)
-	{
-		my $value = shift;
-		$self->{tModify} = $value;
-		return $self;
-	}
-	else
-	{
-		return $self->{tModify};
-	}
-}
-
-sub MaxModifyPathName
-{
-	my $self = @_ ? shift : Azzert ();
-	if (@_)
-	{
-		my $value = shift;
-		$self->{sMaxModifyPathName} = $value;
-		return $self;
-	}
-	else
-	{
-		return $self->{sMaxModifyPathName};
-	}
-}
-
-sub MaxModifyTime
-{
-	my $self = @_ ? shift : Azzert ();
-	if (@_)
-	{
-		my $value = shift;
-		$self->{tMaxModify} = $value;
-		return $self;
-	}
-	else
-	{
-		return $self->{tMaxModify};
-	}
-}
+sub IncludeNames      { return GetOrSetObjectProperty ('rhksIncludeNames'    , @_); }
+sub IncludePathNames  { return GetOrSetObjectProperty ('rhksIncludePathNames', @_); }
+sub ModifyTime        { return GetOrSetObjectProperty ('tModify'             , @_); }
+sub MaxModifyPathName { return GetOrSetObjectProperty ('sMaxModifyPathName'  , @_); }
+sub MaxModifyTime     { return GetOrSetObjectProperty ('tMaxModify'          , @_); }
 
 sub PrettyTime
 {
